@@ -1,0 +1,40 @@
+﻿@model IEnumerable<MovieRental.Models.Documentary>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Documentaries</h2>
+    <table id="documentaries" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Genre</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            var table = $("#documentaries").dataTable({
+                ajax: {
+                    url: "/api/documentaries",
+                    dataSrc: ""
+                },
+                columns: [
+                    {
+                        data: "name"
+                    },
+                    {
+                        data: "documentaryGenre.name"
+                    },
+                ]
+            });
+            
+        });
+    </script>
+}

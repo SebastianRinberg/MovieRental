@@ -1,0 +1,70 @@
+﻿@model IEnumerable<MovieRental.Models.Documentary>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Documentaries</h2>
+    <p>
+        @Html.ActionLink("New Documentary", "New", "Documentaries", null, new { @class = "btn btn-primary" })
+    </p>
+
+    <table id="documentaries" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Genre</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            var table = $("#documentaries").dataTable({
+                ajax: {
+                    url: "/api/documentaries",
+                    dataSrc: ""
+                },
+                columns: [
+                    {
+                        data: "name",
+                        render: function (data, type, documentary) {
+                            return "<a href='/documentaries/edit/" + documentary.id + "'>" + documentary.id + "</a>";
+                        }
+                    },
+                    {
+                        data: "documentaryGenre.name",
+
+                    },
+                    {
+                        data: "id",
+                        render: function (data) {
+                            return "<button class='btn-link js-delete' data-documentary-id=" + data + ">Delete</button>";
+                        }
+                    }
+                ]
+            });
+
+            $("#documentaries").on("click", ".js-delete", function () {
+                var button = $(this);
+
+                bootbox.confirm("Are you sure you want to delete this documentary?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/api/documentaries/" + button.attr("data-documentary-id"),
+                            method: "DELETE",
+                            success: function () {
+                                table.row(button.parents("tr")).remove().draw();
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}
